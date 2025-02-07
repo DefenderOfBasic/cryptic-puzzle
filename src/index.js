@@ -20,8 +20,8 @@ async function init() {
     document.querySelector('#pixi-container').appendChild(app.canvas);
     resize()
 
-    brokenHeartTexture = await Assets.load('/broken.png');
-    heartTexture = await Assets.load('/heart.png');
+    brokenHeartTexture = await Assets.load('./broken.png');
+    heartTexture = await Assets.load('./heart.png');
     
     // heartTexture.source.antialias = true
     heartTexture.source.autoGenerateMipmaps = true 
