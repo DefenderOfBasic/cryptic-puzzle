@@ -3,38 +3,45 @@ import * as PIXI from 'pixi.js';
 
 let app;
 let hearts = []
+let heartTexture
+let brokenHeartTexture
+
+const DEFAULT_WIDTH = 800;
+const DEFAULT_HEIGHT = 600;
 
 async function init() {
     // Create a new application
     app = new Application();
 
     // Initialize the application
-    const containerElement = document.querySelector('#pixi-container')
-    await app.init({ 
-      background: 'white',
-      antialias: true, 
-      autoDensity: true,
-      resolution: window.devicePixelRatio || 1,
-    });
-    app.renderer.resize(500, 500);
-    containerElement.appendChild(app.canvas);
-    app.canvas.style.height = 'auto'
-    window.hearts = hearts
+    await app.init({ background: 'white', antialias: true });
+    document.querySelector('#pixi-container').appendChild(app.canvas);
 
-    createGrid()
+    
+    brokenHeartTexture = await Assets.load('./broken.png');
+    heartTexture = await Assets.load('./heart.png');
+    
+    // heartTexture.source.antialias = true
+    heartTexture.source.autoGenerateMipmaps = true 
+    brokenHeartTexture.source.autoGenerateMipmaps = true 
+    // heartTexture.source.scaleMode = 'linear' // or nearest
+
+    app.ticker.add((time) => {
+        
+    });
+
+    createSpriteGrid()
+
+    // for (let heart of hearts) {
+    //   heart.texture = heartTexture
+    // }
 }
 
 init()
 
-function makeCircle() {
-  const circle = new PIXI.Graphics();
 
-  circle.circle(0, 0, 5)
-  circle.fill(0x990012)
-  return circle
-}
 
-function createGrid() {
+  function createSpriteGrid() {
     // Create container for the grid
     const gridContainer = new PIXI.Container();
     const spacing = 100
@@ -48,21 +55,23 @@ function createGrid() {
     // Create sprites
     for (let row = 0; row < GRID_SIZE; row++) {
       for (let col = 0; col < GRID_SIZE; col++) {
-        const sprite = makeCircle()
-        // const sprite = new PIXI.Sprite(texture);
-          // sprite.on('pointerdown', function(e) {
-          //   sprite.texture = heartTexture
-          // });
-          // sprite.cursor = 'pointer'
-          // sprite.eventMode = 'static'
+          const texture = brokenHeartTexture
+          const sprite = new PIXI.Sprite(texture);
+          sprite.on('pointerdown', function(e) {
+            sprite.texture = heartTexture
+          });
+          sprite.cursor = 'pointer'
+          sprite.eventMode = 'static'
           
           // Center anchor point
-          // sprite.anchor.set(0.5);
+          sprite.anchor.set(0.5);
           
           // Position sprite
           sprite.x = col * spacing - totalWidth / 2;
           sprite.y = row * spacing - totalHeight / 2;
           
+          // Optional: scale sprite if needed
+          sprite.scale.set(0.08);
           hearts.push(sprite)
           
           // Add to container
@@ -71,8 +80,8 @@ function createGrid() {
   }
   
   // Center the entire grid container
-  gridContainer.x = app.renderer.width / 2;
-  gridContainer.y = app.renderer.height / 2;
+  gridContainer.x = DEFAULT_WIDTH / 2;
+  gridContainer.y = DEFAULT_HEIGHT / 2;
   
   // Add container to stage
   app.stage.addChild(gridContainer);

@@ -1,13 +1,15 @@
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  overflow: hidden;
+canvas {
+  /* border: 1px solid red; */
+  max-width: 100%;
 }
 
-#pixi-container {
+html, body {
+  height: 100%;
+}
+
+#container {
   display: flex;
-  width: 100%;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  height: 100%;
 }
